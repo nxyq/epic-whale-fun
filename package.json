@@ -1,0 +1,14 @@
+{
+  "name": "luau-obfuscator",
+  "version": "1.0.0",
+  "description": "A comprehensive Lua/LuaU obfuscator for Roblox",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "keywords": ["lua", "obfuscator", "roblox", "luau"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {}
+}
