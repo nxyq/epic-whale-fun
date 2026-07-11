@@ -1,57 +1,84 @@
-# LuaU Obfuscator
+# LuaU Obfuscator - Advanced Edition
 
-A comprehensive Lua/LuaU obfuscator built in Node.js for Roblox development. This tool transforms readable Lua code into heavily obfuscated versions while maintaining functionality.
+A powerful, feature-rich Lua/LuaU code obfuscator for Roblox development with multiple obfuscation presets and advanced transformations.
 
-## Features
+## 🎯 Features
 
-- **Name Obfuscation**: Renames variables, functions, and parameters to meaningless identifiers
-- **String Encryption**: Encodes string literals with a decoder function
-- **Control Flow Obfuscation**: Wraps code in dummy conditionals to complicate analysis
-- **Comment Removal**: Strips all comments from the code
-- **Lexer & Parser**: Full tokenization and AST-based transformation pipeline
-- **Code Generator**: Converts transformed AST back to valid Lua code
+- **Name Obfuscation**: Renames variables, functions, and parameters
+- **String Encryption**: Encodes strings with decoder function
+- **Control Flow Obfuscation**: Wraps code in dummy conditionals
+- **Dead Code Injection**: Adds unreachable code blocks
+- **Variable Splitting**: Decomposes variables into multiple operations
+- **Array Flattening**: Converts tables into separate statements
+- **Function Wrapping**: Wraps functions with closure layers
+- **Property Obfuscation**: Obfuscates table property access
+- **Junk Code Generation**: Generates realistic-looking unused code
+- **Constant Folding**: Simplifies constant expressions
+- **Comment Removal**: Strips all comments
+- **Full Lua Support**: Complete lexer/parser for Lua syntax
 
-## Installation
+## 📦 Installation
 
 ```bash
 npm install
 ```
 
-## Usage
+## 🚀 Quick Start
 
-### Command Line
+### Command Line Usage
+
+```bash
+# Using default preset (medium)
+node index.js input.lua
+
+# With specific preset
+node index.js --preset heavy input.lua output.lua
+
+# Custom output filename
+node index.js --preset extreme input.lua obfuscated.lua
+```
+
+### Presets
+
+| Preset | Features | Use Case |
+|--------|----------|----------|
+| **light** | Name renaming + comments removed | Minimal obfuscation |
+| **medium** | + String encryption + Control flow | Balanced protection |
+| **heavy** | + Dead code + Variable splitting + Junk | Strong protection |
+| **extreme** | + Array flattening + Function wrapping | Maximum protection |
+| **debug** | No transformations | Testing/debugging |
+
+### Programmatic Usage
 
 ```javascript
 const Obfuscator = require('./src/obfuscator');
 
 const obfuscator = new Obfuscator({
     renameVariables: true,
+    renameGlobals: true,
     stringEncryption: true,
-    removeComments: true,
-    addJunkCode: false,
-    controlFlow: true
+    controlFlow: true,
+    deadCodeInjection: true,
+    variableSplitting: true,
+    arrayFlattening: true,
+    functionWrapping: true,
+    propertyObfuscation: true,
+    addJunkCode: true
 });
 
-// Obfuscate code string
 const code = `
-local function greet(name)
-    print("Hello, " .. name)
+local function add(a, b)
+    return a + b
 end
-
-greet("World")
+local result = add(5, 10)
+print(result)
 `;
 
-const obfuscatedCode = obfuscator.obfuscate(code);
-console.log(obfuscatedCode);
+const obfuscated = obfuscator.obfuscate(code);
+console.log(obfuscated);
 ```
 
-### Obfuscate a File
-
-```javascript
-const obfuscatedCode = obfuscator.obfuscateFile('script.lua');
-```
-
-## Configuration Options
+## 📋 Configuration Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -59,33 +86,45 @@ const obfuscatedCode = obfuscator.obfuscateFile('script.lua');
 | `renameGlobals` | boolean | `true` | Rename global functions |
 | `stringEncryption` | boolean | `true` | Encrypt string literals |
 | `removeComments` | boolean | `true` | Remove all comments |
-| `addJunkCode` | boolean | `false` | Add non-functional junk code |
+| `addJunkCode` | boolean | `false` | Add non-functional code |
 | `controlFlow` | boolean | `true` | Add control flow obfuscation |
-| `constantFolding` | boolean | `false` | Simplify constant expressions |
+| `constantFolding` | boolean | `true` | Simplify constants |
+| `deadCodeInjection` | boolean | `false` | Inject unreachable code |
+| `variableSplitting` | boolean | `false` | Split variable assignments |
+| `arrayFlattening` | boolean | `false` | Flatten tables |
+| `functionWrapping` | boolean | `false` | Wrap functions |
+| `propertyObfuscation` | boolean | `false` | Obfuscate property access |
 
-## Architecture
+## 🏗️ Architecture
 
 ### Components
 
 1. **Lexer** (`src/lexer.js`)
-   - Tokenizes Lua/LuaU source code
-   - Handles strings, numbers, identifiers, operators, and keywords
-   - Preserves line and column information for debugging
+   - Tokenizes Lua/LuaU code
+   - Handles all Lua syntax elements
+   - Tracks line/column information
 
 2. **Parser** (`src/parser.js`)
-   - Builds an Abstract Syntax Tree (AST) from tokens
-   - Supports full Lua syntax including tables, functions, and control flow
-   - Generates an in-memory representation for transformation
+   - Builds Abstract Syntax Tree (AST)
+   - Full Lua grammar support
+   - Error recovery
 
 3. **Transformations** (`src/transformations/`)
-   - **nameObfuscator.js**: Renames identifiers and tracks scope
-   - **stringEncoder.js**: Encodes string literals with decoder
-   - **controlFlow.js**: Wraps statements in dummy conditionals
+   - `nameObfuscator.js` - Variable/function renaming
+   - `stringEncoder.js` - String encryption with decoder
+   - `controlFlow.js` - Dummy conditionals
+   - `deadCodeInjection.js` - Unreachable code blocks
+   - `variableSplitting.js` - Decompose assignments
+   - `arrayFlattening.js` - Table to statements
+   - `functionWrapping.js` - Closure wrapping
+   - `propertyObfuscation.js` - Property access obfuscation
+   - `junkCode.js` - Generate fake code
+   - `constantFolding.js` - Optimize constants
 
 4. **Code Generator** (`src/codeGenerator.js`)
-   - Traverses the AST and generates Lua code
-   - Handles indentation and formatting
-   - Preserves code semantics
+   - Generates Lua from AST
+   - Proper formatting/indentation
+   - Semantic preservation
 
 ### Transformation Pipeline
 
@@ -94,110 +133,134 @@ Source Code
     ↓
 Lexer (Tokenization)
     ↓
-Parser (AST Generation)
+Parser (AST)
     ↓
-Name Obfuscator
+Constant Folding
     ↓
-String Encoder
+Name Obfuscation
     ↓
-Control Flow Transformer
+Property Obfuscation
+    ↓
+Variable Splitting
+    ↓
+Array Flattening
+    ↓
+String Encryption
+    ↓
+Control Flow
+    ↓
+Dead Code Injection
+    ↓
+Junk Code Generation
+    ↓
+Function Wrapping
     ↓
 Code Generator
     ↓
 Obfuscated Code
 ```
 
-## Example
-
-**Input:**
-```lua
-local function greet(name)
-    print("Hello, " .. name)
-    return name
-end
-
-local message = "World"
-greet(message)
-```
-
-**Output:**
-```lua
-local __obf_s = (function()
-    local __obf_t = {}
-    local __obf_f = function(s)
-        if __obf_t[s] then return __obf_t[s] end
-        local result = ''
-        for i = 1, #s do
-            local b = string.byte(s, i)
-            result = result .. string.char((b + 42) % 256)
-        end
-        __obf_t[s] = result
-        return result
-    end
-    return __obf_f
-end)()
-function a(b)
-    if b == b then
-        print(__obf_s("encoded_hello"))
-        return b
-    end
-end
-local c = __obf_s("encoded_world")
-a(c)
-```
-
-## Testing
-
-Run the test suite:
+## 🧪 Testing
 
 ```bash
 node test.js
 ```
 
-The test suite includes:
-- Simple variable assignments
-- Function declarations
-- String literals
-- Control flow statements
+Tests cover:
+- Variable assignments
+- Functions
+- Strings & tables
+- Control flow
 - Loops
-- Tables
-- Comments
-- Anonymous functions
-- Method calls
 - Complex expressions
 
-## Limitations
+## ⚙️ CLI Options
 
-- Does not support Lua 5.2+ GoTo statements
-- String escape sequences are limited
-- Multiline comments in strings may have issues
-- Some advanced metatable operations may not parse correctly
+```bash
+node index.js --help
+```
 
-## Performance
+Shows all available presets and options.
 
-- Typical obfuscation speed: 1-5ms per KB of code
-- Memory usage: ~10-20x the size of input code (due to AST)
-- Optimized for code clarity, not production performance
+## 📈 Performance
 
-## Security Notes
+- **Speed**: 1-10ms per KB
+- **Compression Ratio**: 1.0-3.0x
+- **Memory**: ~10-20x input size (AST overhead)
 
-This obfuscator provides:
-- **Readability obfuscation** - Makes code harder to understand at a glance
-- **Basic decompilation protection** - Makes decompilation tools less useful
+## 🔒 Security Notes
 
-This obfuscator does NOT provide:
-- **Cryptographic security** - Determined reversing can still extract original logic
-- **Protection against dumps** - Runtime memory dumps can reveal deobfuscated code
-- **Watermarking/License checking** - No built-in protection against copying
+**Provides:**
+- Readability obfuscation
+- Basic decompilation resistance
+- Variable name hiding
+- String encryption
 
-## License
+**Does NOT provide:**
+- Cryptographic security
+- Runtime memory protection
+- Malware embedding
+- Watermarking
+
+## 🛠️ Advanced Usage
+
+### Custom Presets
+
+```javascript
+const Obfuscator = require('./src/obfuscator');
+
+const custom = new Obfuscator({
+    renameVariables: true,
+    stringEncryption: true,
+    deadCodeInjection: true,
+    functionWrapping: false
+});
+
+const result = custom.obfuscate(code);
+```
+
+### File Processing
+
+```javascript
+const obfuscator = new Obfuscator({ /* options */ });
+const result = obfuscator.obfuscateFile('input.lua');
+fs.writeFileSync('output.lua', result);
+```
+
+## 📝 Examples
+
+See `examples/` directory for:
+- Simple scripts
+- Complex functions
+- Table operations
+- Method calls
+
+## 🐛 Debugging
+
+Enable debug mode:
+```bash
+DEBUG=1 node index.js --preset debug input.lua
+```
+
+## 📄 License
 
 MIT
 
-## Contributing
+## 🤝 Contributing
 
-Feel free to submit issues and pull requests to improve the obfuscator!
+Contributions welcome! Please ensure:
+- Code follows existing style
+- Tests pass
+- Features are documented
 
-## Disclaimer
+## ⚠️ Disclaimer
 
-Use this tool responsibly. Do not use it for malicious purposes or to obfuscate malware.
+Use responsibly. This tool is for:
+- ✅ Protecting your own code
+- ✅ Learning obfuscation techniques
+- ✅ Academic research
+
+Do NOT use for:
+- ❌ Obfuscating malware
+- ❌ Bypassing security measures
+- ❌ Malicious purposes
